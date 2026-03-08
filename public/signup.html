@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quest LostLink — Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script>
+    (function(){
+      const u = sessionStorage.getItem('ql_user') || localStorage.getItem('ql_user');
+      const t = sessionStorage.getItem('ql_token') || localStorage.getItem('ql_token');
+      if (u && t) window.location.href = 'index.html';
+    })();
+  </script>
+  <style>.auth-card { max-width: 480px; }</style>
+</head>
+<body>
+  <header class="hdr">
+    <a class="logo" href="login.html">Quest <span>LostLink</span></a>
+    <nav class="hdr-nav"></nav>
+    <button class="hmbg" id="hmbg" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </header>
+  <div class="mob-nav" id="mobNav"></div>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">Quest <span>LostLink</span></div>
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-sub">Join the Quest community to report and recover campus items</p>
+
+      <form id="signupForm" class="auth-form" novalidate>
+        <input type="hidden" id="sRole" value="student"/>
+
+        <div class="auth-row">
+          <div class="fg"><label for="sFirst">First Name *</label><input type="text" id="sFirst" placeholder="Ahmad" maxlength="60"/><span class="ferr" id="eFirst"></span></div>
+          <div class="fg"><label for="sLast">Last Name *</label><input type="text" id="sLast" placeholder="Razif" maxlength="60"/><span class="ferr" id="eLast"></span></div>
+        </div>
+
+        <div class="fg"><label for="sEmail">Quest Email *</label><input type="text" id="sEmail" placeholder="you@quest.edu.my" maxlength="180"/><span class="ferr" id="eEmail"></span></div>
+        <div class="fg"><label for="sPhone">Phone Number</label><input type="text" id="sPhone" placeholder="+60 12-345 6789" maxlength="20"/></div>
+
+        <div class="fg">
+          <label for="sPw">Password *</label>
+          <div class="pw-wrap">
+            <input type="password" id="sPw" placeholder="At least 8 characters" maxlength="128"/>
+            <button type="button" class="pw-eye" onclick="togglePw('sPw','eye1')" aria-label="Show password">
+              <svg id="eye1" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength-bar" id="strengthBar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-label" id="strengthLabel"></div>
+          <span class="ferr" id="ePw"></span>
+        </div>
+
+        <div class="fg">
+          <label for="sPwC">Confirm Password *</label>
+          <div class="pw-wrap">
+            <input type="password" id="sPwC" placeholder="Re-enter password" maxlength="128"/>
+            <button type="button" class="pw-eye" onclick="togglePw('sPwC','eye2')" aria-label="Show confirm password">
+              <svg id="eye2" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="ferr" id="ePwC"></span>
+        </div>
+
+        <div style="display:flex;align-items:flex-start;gap:.55rem">
+          <input type="checkbox" id="sAgree" style="width:auto;margin-top:3px;flex-shrink:0;accent-color:var(--accent)"/>
+          <label for="sAgree" style="text-transform:none;letter-spacing:0;font-size:.81rem;color:var(--muted);cursor:pointer">
+            I agree to the <a href="#" style="color:var(--accent)">Terms of Use</a> and confirm I am a Quest International University member.
+          </label>
+        </div>
+        <span class="ferr" id="eAgree" style="margin-top:-.4rem"></span>
+
+        <div class="success-msg" id="successMsg">
+          <span>✓</span>
+          <div><strong>Account created!</strong><p>Redirecting to login… <a href="login.html">Click here</a> if needed.</p></div>
+        </div>
+
+        <button type="submit" class="btn btn-p btn-full" id="subBtn" style="margin-top:.3rem">Create Account</button>
+      </form>
+
+      <div class="auth-divider">or</div>
+      <div class="auth-footer">Already have an account? <a href="login.html">Sign in</a></div>
+    </div>
+  </div>
+
+  <footer><div class="fl">Quest <span>LostLink</span></div><div>Quest International University &copy; 2025</div></footer>
+  <div id="tc" role="status" aria-live="polite"></div>
+
+  <script src="js/nav.js"></script>
+  <script>
+    const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    function $(id) { return document.getElementById(id); }
+    function togglePw(inputId, iconId) {
+      const inp=$(inputId), eye=$(iconId);
+      if(inp.type==='password'){inp.type='text';eye.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';}
+      else{inp.type='password';eye.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}
+    }
+    $('sPw').addEventListener('input', () => {
+      const pw=$('sPw').value, bar=$('strengthBar'), fil=$('strengthFill'), lbl=$('strengthLabel');
+      if(!pw){bar.classList.remove('show');lbl.classList.remove('show');return;}
+      bar.classList.add('show');lbl.classList.add('show');
+      let s=0;
+      if(pw.length>=8)s++;if(pw.length>=12)s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;
+      const d=[{w:'20%',bg:'#dc2626',t:'Very weak'},{w:'40%',bg:'#ea580c',t:'Weak'},{w:'60%',bg:'#ca8a04',t:'Fair'},{w:'80%',bg:'#16a34a',t:'Good'},{w:'100%',bg:'#15803d',t:'Strong'}][Math.max(0,s-1)];
+      fil.style.width=d.w;fil.style.background=d.bg;lbl.textContent=d.t;lbl.style.color=d.bg;
+    });
+    function setErr(fId,eId,msg){$(fId)?.classList.add('inv');const e=$(eId);if(e){e.textContent=msg;e.classList.add('v');}}
+    function clrAll(){document.querySelectorAll('.ferr').forEach(e=>e.classList.remove('v'));document.querySelectorAll('.inv').forEach(e=>e.classList.remove('inv'));}
+
+    $('signupForm').addEventListener('submit', async e => {
+      e.preventDefault(); clrAll();
+      let ok = true;
+      const v = id => ($(id)?.value||'').trim();
+      if(!v('sFirst'))                {setErr('sFirst','eFirst','First name required.');ok=false;}
+      if(!v('sLast'))                 {setErr('sLast','eLast','Last name required.');ok=false;}
+      if(!EMAIL_RE.test(v('sEmail'))) {setErr('sEmail','eEmail','A valid email is required.');ok=false;}
+      if(v('sPw').length<8)           {setErr('sPw','ePw','Password must be at least 8 characters.');ok=false;}
+      if(v('sPw')!==v('sPwC'))        {setErr('sPwC','ePwC','Passwords do not match.');ok=false;}
+      if(!$('sAgree').checked)        {$('eAgree').textContent='You must agree to continue.';$('eAgree').classList.add('v');ok=false;}
+      if(!ok){document.querySelector('.ferr.v')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
+
+      $('subBtn').disabled=true; $('subBtn').textContent='Creating account…';
+      try {
+        const res = await fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({first_name:v('sFirst'),last_name:v('sLast'),email:v('sEmail'),phone:v('sPhone'),password:v('sPw'),role:v('sRole')})});
+        const data = await res.json();
+        if(!res.ok) throw data;
+        $('signupForm').reset(); clrAll();
+        $('successMsg').classList.add('show');
+        $('subBtn').textContent='✓ Account Created';
+        setTimeout(()=>window.location.href='login.html?email='+encodeURIComponent(v('sEmail')), 2000);
+      } catch(err) {
+        $('subBtn').disabled=false; $('subBtn').textContent='Create Account';
+        const tc=$('tc'), el=document.createElement('div');
+        el.className='toast er';
+        el.innerHTML=`<span style="font-weight:800;color:var(--lost)">✕</span>${err?.message||'Signup failed.'}`;
+        tc.appendChild(el); setTimeout(()=>el.remove(),4000);
+      }
+    });
+  </script>
+</body>
+</html>

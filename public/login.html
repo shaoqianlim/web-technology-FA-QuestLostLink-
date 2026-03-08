@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quest LostLink — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <header class="hdr">
+    <a class="logo" href="login.html">Quest <span>LostLink</span></a>
+    <nav class="hdr-nav"></nav>
+    <button class="hmbg" id="hmbg" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="mob-nav" id="mobNav"></div>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">Quest <span>LostLink</span></div>
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-sub">Sign in to manage your campus lost &amp; found reports</p>
+
+      <form id="loginForm" class="auth-form" novalidate>
+        <div class="alert-box" id="alertBox">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="alertMsg">Invalid email or password.</span>
+        </div>
+
+        <div class="fg">
+          <label for="lEmail">Email Address *</label>
+          <input type="text" id="lEmail" placeholder="you@quest.edu.my" maxlength="180" autocomplete="email"/>
+          <span class="ferr" id="eEmail"></span>
+        </div>
+
+        <div class="fg">
+          <label for="lPw">Password *</label>
+          <div class="pw-wrap">
+            <input type="password" id="lPw" placeholder="Your password" maxlength="128" autocomplete="current-password"/>
+            <button type="button" class="pw-eye" id="pwEyeBtn" aria-label="Show password">
+              <svg id="eyeIcon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <span class="ferr" id="ePw"></span>
+        </div>
+
+        <div class="forgot-row"><a href="#">Forgot password?</a></div>
+
+        <div style="display:flex;align-items:center;gap:.55rem">
+          <input type="checkbox" id="lRemember" style="width:auto;accent-color:var(--accent)"/>
+          <label for="lRemember" style="text-transform:none;letter-spacing:0;font-size:.82rem;color:var(--muted);cursor:pointer;margin:0">
+            Keep me signed in
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-p btn-full" id="subBtn" style="margin-top:.3rem">Sign In</button>
+      </form>
+
+      <div class="auth-divider">or</div>
+      <div class="auth-footer">Don't have an account? <a href="signup.html">Sign up</a></div>
+
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="fl">Quest <span>LostLink</span></div>
+    <div>Quest International University &copy; 2025</div>
+  </footer>
+  <div id="tc" role="status" aria-live="polite"></div>
+
+  <script src="js/nav.js"></script>
+  <script>
+    // All logic inside DOMContentLoaded so DOM is guaranteed ready
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // Redirect if already logged in
+      var u = sessionStorage.getItem('ql_user') || localStorage.getItem('ql_user');
+      var t = sessionStorage.getItem('ql_token') || localStorage.getItem('ql_token');
+      if (u && t) { window.location.href = 'index.html'; return; }
+
+      var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      function eid(id) { return document.getElementById(id); }
+
+      // Password eye toggle — addEventListener only
+      var pwEyeBtn = eid('pwEyeBtn');
+      var lPwInput = eid('lPw');
+      var eyeIcon  = eid('eyeIcon');
+      if (pwEyeBtn) {
+        pwEyeBtn.addEventListener('click', function () {
+          if (lPwInput.type === 'password') {
+            lPwInput.type = 'text';
+            eyeIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+          } else {
+            lPwInput.type = 'password';
+            eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+          }
+        });
+      }
+
+      // Pre-fill email if redirected from signup
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('email')) eid('lEmail').value = params.get('email');
+
+      function setErr(fId, eId, msg) {
+        var f = eid(fId); if (f) f.classList.add('inv');
+        var e = eid(eId); if (e) { e.textContent = msg; e.classList.add('v'); }
+      }
+      function clrAll() {
+        document.querySelectorAll('.ferr').forEach(function(e){ e.classList.remove('v'); });
+        document.querySelectorAll('.inv').forEach(function(e){ e.classList.remove('inv'); });
+        eid('alertBox').classList.remove('show');
+      }
+
+      // Form submit
+      eid('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        clrAll();
+
+        var email = (eid('lEmail').value || '').trim();
+        var pw    = (eid('lPw').value    || '').trim();
+        var ok    = true;
+
+        if (!EMAIL_RE.test(email)) { setErr('lEmail', 'eEmail', 'A valid email is required.'); ok = false; }
+        if (!pw)                   { setErr('lPw',    'ePw',    'Password is required.');      ok = false; }
+        if (!ok) return;
+
+        var btn = eid('subBtn');
+        btn.disabled    = true;
+        btn.textContent = 'Signing in…';
+
+        try {
+          var res  = await fetch('/api/auth/login', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ email: email, password: pw }),
+          });
+          var data = await res.json();
+
+          if (!res.ok) throw data;
+
+          // Save to storage
+          var store = eid('lRemember').checked ? localStorage : sessionStorage;
+          store.setItem('ql_token', data.token  || '');
+          store.setItem('ql_user',  JSON.stringify(data.user || {}));
+
+          // Go to intended page or home
+          var next = params.get('next') || 'index.html';
+          window.location.href = next;
+
+        } catch (err) {
+          btn.disabled    = false;
+          btn.textContent = 'Sign In';
+          eid('alertMsg').textContent = (err && err.message) ? err.message : 'Invalid email or password.';
+          eid('alertBox').classList.add('show');
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>
